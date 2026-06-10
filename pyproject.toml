@@ -44,19 +44,27 @@ dependencies = [
     "mcp>=1.9.4",
     "langchain-aws>=0.2.28",
     "pandas>=2.3.1",
+    "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]
 dev = ["mypy>=1.11.1", "ruff>=0.6.1"]
+# Optional pieces of the verify layer:
+annotate = ["streamlit>=1.37.0"]          # evals/annotate/app.py
+pg = ["psycopg[binary]>=3.1"]             # Postgres mirror (store/db.py)
+baselines = ["gpt-researcher>=0.8"]       # GPT Researcher as eval baseline
 
 [build-system]
 requires = ["setuptools>=73.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["open_deep_research", "legacy", "tests"]
+# PATCH(verify): our packages (verify, store, explore_backend) live in src/
+packages = ["open_deep_research", "legacy", "tests", "verify", "store"]
+py-modules = ["explore_backend"]
 
 [tool.setuptools.package-dir]
+"" = "src"
 "open_deep_research" = "src/open_deep_research"
 "legacy" = "src/legacy"
 "tests" = "tests"

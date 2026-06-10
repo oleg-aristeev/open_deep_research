@@ -1,0 +1,62 @@
+# Infrastructure for the verified deep research MVP (MVP plan §2).
+# The pipeline itself runs without any of this (filesystem store by default);
+# bring these up when you want Postgres mirroring, S3 snapshots or Langfuse.
+#
+#   docker compose -f deploy/docker-compose.yml up -d
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: verify
+      POSTGRES_PASSWORD: verify
+      POSTGRES_DB: verify
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./sql/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: verify
+      MINIO_ROOT_PASSWORD: verify-secret
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - miniodata:/data
+
+  langfuse:
+    image: langfuse/langfuse:2
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://verify:verify@postgres:5432/verify
+      NEXTAUTH_SECRET: changeme-nextauth-secret
+      SALT: changeme-salt
+      NEXTAUTH_URL: http://localhost:3000
+      TELEMETRY_ENABLED: "false"
+    ports:
+      - "3000:3000"
+
+  # Uncomment when stance costs exceed ~40% of report cost (MVP plan §4.5):
+  # MiniCheck on vLLM, needs one A10/L4-class GPU.
+  # vllm:
+  #   image: vllm/vllm-openai:latest
+  #   command: --model bespokelabs/Bespoke-MiniCheck-7B --max-model-len 8192
+  #   ports:
+  #     - "8000:8000"
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]
+
+volumes:
+  pgdata:
+  miniodata:

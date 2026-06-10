@@ -696,11 +696,24 @@ async def final_report_generation(state: AgentState, config: RunnableConfig):
         **cleared_state
     }
 
+# PATCH(verify): the verify subgraph replaces final_report_generation when
+# enable_verification is on. It claimifies the findings, hunts for
+# counter-evidence per claim, aggregates confidence and composes a verified
+# report (final_report + report.md/claim_graph.json in the run store).
+from verify.graph import verify_subgraph  # noqa: E402
+
+
+def route_to_report(state: AgentState, config: RunnableConfig) -> Literal["verification", "final_report_generation"]:
+    """PATCH(verify): route research output to the verify subgraph or the plain report."""
+    configurable = Configuration.from_runnable_config(config)
+    return "verification" if configurable.enable_verification else "final_report_generation"
+
+
 # Main Deep Researcher Graph Construction
 # Creates the complete deep research workflow from user input to final report
 deep_researcher_builder = StateGraph(
-    AgentState, 
-    input=AgentInputState, 
+    AgentState,
+    input=AgentInputState,
     config_schema=Configuration
 )
 
@@ -709,11 +722,18 @@ deep_researcher_builder.add_node("clarify_with_user", clarify_with_user)        
 deep_researcher_builder.add_node("write_research_brief", write_research_brief)     # Research planning phase
 deep_researcher_builder.add_node("research_supervisor", supervisor_subgraph)       # Research execution phase
 deep_researcher_builder.add_node("final_report_generation", final_report_generation)  # Report generation phase
+deep_researcher_builder.add_node("verification", verify_subgraph)                  # PATCH(verify): verified report phase
 
 # Define main workflow edges for sequential execution
 deep_researcher_builder.add_edge(START, "clarify_with_user")                       # Entry point
-deep_researcher_builder.add_edge("research_supervisor", "final_report_generation") # Research to report
+# PATCH(verify): conditional routing instead of the static research->report edge
+deep_researcher_builder.add_conditional_edges(
+    "research_supervisor",
+    route_to_report,
+    ["verification", "final_report_generation"],
+)
 deep_researcher_builder.add_edge("final_report_generation", END)                   # Final exit point
+deep_researcher_builder.add_edge("verification", END)                              # PATCH(verify)
 
 # Compile the complete deep researcher workflow
 deep_researcher = deep_researcher_builder.compile()

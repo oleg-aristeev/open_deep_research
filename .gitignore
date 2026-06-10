@@ -67,3 +67,9 @@ tmp/
 temp/
 
 .langgraph_api
+
+# PATCH(verify): verify-layer local artifacts
+.verify_store/
+evals/results/
+evals/annotate/labels.csv
+.venv/

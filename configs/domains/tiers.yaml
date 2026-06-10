@@ -1,0 +1,170 @@
+# Static source tier list v0 (MVP plan §4.6).
+# A = regulators / primary data / official filings / Cochrane-grade evidence
+# B = peer review, quality press
+# C = mainstream media / expert blogs
+# D = UGC / unknown (anything not listed is treated as D and logged for triage)
+
+A:
+  # Regulators, official filings, primary data
+  - sec.gov
+  - edgar.sec.gov
+  - europa.eu
+  - ecb.europa.eu
+  - federalreserve.gov
+  - bls.gov
+  - bea.gov
+  - census.gov
+  - imf.org
+  - worldbank.org
+  - oecd.org
+  - data.gov
+  - eurostat.ec.europa.eu
+  - cbr.ru
+  # Health primary / systematic reviews
+  - cochranelibrary.com
+  - cochrane.org
+  - who.int
+  - nih.gov
+  - ncbi.nlm.nih.gov
+  - pubmed.ncbi.nlm.nih.gov
+  - clinicaltrials.gov
+  - fda.gov
+  - efsa.europa.eu
+  - cdc.gov
+  - ema.europa.eu
+  - usda.gov
+  # Scientific primary infrastructure
+  - arxiv.org
+  - doi.org
+  - crossref.org
+  - retractionwatch.com
+  # Company primary (investor relations / official docs)
+  - abc.xyz
+  - investor.apple.com
+  - microsoft.com
+  - ir.aboutamazon.com
+  - openai.com
+  - anthropic.com
+  - deepmind.google
+  - ai.meta.com
+  - nvidia.com
+  - huggingface.co
+
+B:
+  # Peer review and academic publishers
+  - nature.com
+  - science.org
+  - thelancet.com
+  - nejm.org
+  - bmj.com
+  - jamanetwork.com
+  - cell.com
+  - pnas.org
+  - sciencedirect.com
+  - springer.com
+  - link.springer.com
+  - wiley.com
+  - onlinelibrary.wiley.com
+  - academic.oup.com
+  - tandfonline.com
+  - frontiersin.org
+  - plos.org
+  - annualreviews.org
+  - acm.org
+  - ieee.org
+  - openreview.net
+  - semanticscholar.org
+  # Quality press / data journalism
+  - reuters.com
+  - apnews.com
+  - bloomberg.com
+  - ft.com
+  - wsj.com
+  - economist.com
+  - nytimes.com
+  - washingtonpost.com
+  - theguardian.com
+  - bbc.com
+  - bbc.co.uk
+  - npr.org
+  - propublica.org
+  - ourworldindata.org
+  - pewresearch.org
+  - statista.com
+  # AI / tech industry analysis with editorial standards
+  - stateof.ai
+  - epoch.ai
+  - stanford.edu
+  - hai.stanford.edu
+  - mit.edu
+  - technologyreview.com
+  # Finance quality
+  - morningstar.com
+  - spglobal.com
+  - moodys.com
+  - fitchratings.com
+  - factset.com
+
+C:
+  # Mainstream media / industry press / expert blogs
+  - cnbc.com
+  - cnn.com
+  - forbes.com
+  - businessinsider.com
+  - fortune.com
+  - axios.com
+  - theverge.com
+  - techcrunch.com
+  - wired.com
+  - arstechnica.com
+  - venturebeat.com
+  - theinformation.com
+  - semianalysis.com
+  - zdnet.com
+  - engadget.com
+  - thenextweb.com
+  - fastcompany.com
+  - inc.com
+  - vox.com
+  - time.com
+  - newsweek.com
+  - usatoday.com
+  - latimes.com
+  - politico.com
+  - healthline.com
+  - webmd.com
+  - medicalnewstoday.com
+  - examine.com
+  - sciencedaily.com
+  - newscientist.com
+  - scientificamerican.com
+  - investopedia.com
+  - fool.com
+  - seekingalpha.com
+  - marketwatch.com
+  - benzinga.com
+  - yahoo.com
+  - finance.yahoo.com
+  - substack.com
+  - lesswrong.com
+  - towardsdatascience.com
+
+D:
+  # Explicit UGC (anything unknown also defaults to D)
+  - reddit.com
+  - quora.com
+  - medium.com
+  - twitter.com
+  - x.com
+  - facebook.com
+  - linkedin.com
+  - tiktok.com
+  - youtube.com
+  - pinterest.com
+  - wikipedia.org   # useful for orientation, never as evidence
+  - wikihow.com
+  - answers.com
+  - stackexchange.com
+  - blogspot.com
+  - wordpress.com
+  - tumblr.com

@@ -74,7 +74,37 @@ async def tavily_search(
             url = result['url']
             if url not in unique_results:
                 unique_results[url] = {**result, "query": response['query']}
-    
+
+    # PATCH(verify): tee raw search results + full page snapshots into the run
+    # store BEFORE lossy compression. Citations in the verified report point at
+    # these snapshots (with char offsets), never at a paraphrase.
+    try:
+        from store.snapshots import get_snapshot_store
+        from store.traces import get_run_store, run_id_from_config
+        from verify.schema import RawHit
+
+        _run_store = get_run_store(run_id_from_config(config))
+        _snapshot_store = get_snapshot_store()
+        _hits = []
+        for _url, _result in unique_results.items():
+            _raw = _result.get("raw_content")
+            _snapshot_id = _snapshot_store.save(_url, _raw).id if _raw else None
+            _hits.append(RawHit(
+                url=_url,
+                title=_result.get("title", "") or "",
+                snippet=_result.get("content", "") or "",
+                query=_result.get("query", "") or "",
+                raw_content_present=bool(_raw),
+                snapshot_id=_snapshot_id,
+            ))
+        _run_store.record_raw_hits(_hits)
+        _run_store.trace(
+            node="researcher_search", kind="search",
+            payload={"queries": queries, "n_unique_results": len(unique_results)},
+        )
+    except Exception as _tee_error:
+        logging.warning(f"PATCH(verify): raw-results tee failed: {_tee_error}")
+
     # Step 3: Set up the summarization model with configuration
     configurable = Configuration.from_runnable_config(config)
     

@@ -1,0 +1,60 @@
+# Verified Deep Research — MVP configuration (MVP plan §8).
+# Loaded by src/verify/config.py; override path with VERIFY_CONFIG env var.
+
+verify:
+  budget:
+    max_claims: 12
+    max_hypotheses_per_claim: 5
+    queries_per_hypothesis: 2
+    results_per_query: 3
+    max_stance_checks_per_claim: 10
+    max_findings_pages: 25
+    max_cost_usd: 6.0
+    max_minutes: 20.0
+
+  models:
+    claimify_model: "openai:gpt-4.1"
+    skeptic_model: "openai:gpt-4.1"
+    composer_model: "openai:gpt-4.1"
+    notetaker_model: "openai:gpt-4.1-mini"
+    stance_model: "openai:gpt-4.1-mini"
+    max_tokens: 8192
+    composer_max_tokens: 16000
+
+  stance:
+    backend: "llm"           # switch to "minicheck" when stance cost > 40% of report cost
+    minicheck_url: null      # e.g. http://localhost:8000/v1
+    minicheck_model: "bespokelabs/Bespoke-MiniCheck-7B"
+    borderline_band: 0.15
+
+  aggregate:
+    lambda: 1.5
+    beta: 1.2
+    prior:
+      factual: 0.0
+      statistical: 0.0
+      causal: -0.4
+      trend: -0.2
+      predictive: -0.6
+      normative: -0.6
+      definitional: 0.0
+    tier_w: { A: 1.0, B: 0.75, C: 0.45, D: 0.15 }
+    type_w: { primary: 1.0, secondary: 0.7, opinion: 0.35, dataset: 1.0 }
+    tau_days: 365.0
+    single_origin_cap: 0.90
+    contrib_threshold: 0.15
+    bootstrap_iterations: 200
+    not_enough_evidence_u: 0.5
+    stale_age_days: 540.0
+
+  thresholds:
+    tau_extract: 0.6
+    tau_drift: 0.55
+    max_repairs: 2
+
+  tiers_file: "configs/domains/tiers.yaml"
+
+  domain_tau_days:
+    ai_market: 120.0
+    nutrition: 1095.0
+    finance: 120.0

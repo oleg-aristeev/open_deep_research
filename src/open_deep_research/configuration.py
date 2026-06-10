@@ -210,8 +210,22 @@ class Configuration(BaseModel):
             }
         }
     )
+    # PATCH(verify): verification layer switch. When enabled, the final report
+    # is produced by the verify subgraph (claimify -> skeptic -> counter-evidence
+    # -> stance -> aggregate -> verified report) instead of final_report_generation.
+    # Budgets/thresholds/models for the verify layer live in configs/mvp.yaml.
+    enable_verification: bool = Field(
+        default=True,
+        metadata={
+            "x_oap_ui_config": {
+                "type": "boolean",
+                "default": True,
+                "description": "Generate a verified report (claim verification layer) instead of the plain final report"
+            }
+        }
+    )
     # MCP server configuration
-    mcp_config: Optional[MCPConfig] = Field(
+    mcp_config: MCPConfig | None = Field(
         default=None,
         optional=True,
         metadata={
@@ -221,7 +235,7 @@ class Configuration(BaseModel):
             }
         }
     )
-    mcp_prompt: Optional[str] = Field(
+    mcp_prompt: str | None = Field(
         default=None,
         optional=True,
         metadata={
